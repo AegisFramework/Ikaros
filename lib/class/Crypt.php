@@ -61,7 +61,7 @@
 		    mcrypt_generic_init($this -> td, $this -> key, $this -> iv);
 		    $decrypted = mdecrypt_generic($this -> td, $text);
 		    mcrypt_generic_deinit($this -> td);
-		    return $decrypted;
+		    return trim($decrypted);
 		}
 
 
