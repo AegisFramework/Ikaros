@@ -8,3 +8,6 @@
 node_modules
 build
 .conf
+.sass-cache/
+*.css
+*.map
