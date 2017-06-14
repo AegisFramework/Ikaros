@@ -1,6 +1,6 @@
 /**
  * ==============================
- * Artemis 0.1.0 | MIT License
+ * Artemis 0.1.1 | MIT License
  * http://aegisframework.com/
  * ==============================
  */
@@ -69,10 +69,12 @@ class Artemis {
 	}
 
 	value(value){
-		if (typeof value === 'undefined'){
-			return this.collection[0].value;
-		}else{
-			this.collection[0].value = value;
+		if(this.length > 0){
+			if (typeof value === 'undefined'){
+				return this.collection[0].value;
+			}else{
+				this.collection[0].value = value;
+			}
 		}
 	}
 
@@ -132,35 +134,43 @@ class Artemis {
 	}
 
 	filter(element){
-		return new Artemis(this.collection[0].querySelector(element));
+		if(this.length > 0){
+			return new Artemis(this.collection[0].querySelector(element));
+		}
 	}
 
 	data(name, value){
-		if (typeof value === 'undefined'){
-			return this.collection[0].dataset[name];
-		}else{
-			this.collection[0].dataset[name] = value;
+		if(this.length > 0){
+			if (typeof value === 'undefined'){
+				return this.collection[0].dataset[name];
+			}else{
+				this.collection[0].dataset[name] = value;
+			}
 		}
 	}
 
 	text(value){
-		if (typeof value === 'undefined'){
-			return this.collection[0].textContent;
-		}else{
-			this.collection[0].textContent = value;
+		if(this.length > 0){
+			if (typeof value === 'undefined'){
+				return this.collection[0].textContent;
+			}else{
+				this.collection[0].textContent = value;
+			}
 		}
 	}
 
 	html(value){
-		if (typeof value === 'undefined'){
-			return this.collection[0].innerHTML;
-		}else{
-			this.collection[0].innerHTML = value;
+		if(this.length > 0){
+			if (typeof value === 'undefined'){
+				return this.collection[0].innerHTML;
+			}else{
+				this.collection[0].innerHTML = value;
+			}
 		}
 	}
 
 	append(data){
-		if(this.collection[0]){
+		if(this.length > 0){
 			var div = document.createElement('div');
 			div.innerHTML = data;
 			this.collection[0].appendChild(div.firstChild);
@@ -175,6 +185,12 @@ class Artemis {
 
 	get(index){
 		return this.collection[index];
+	}
+
+	first(){
+		if(this.length > 0){
+			return new Artemis(this.collection[0]);
+		}
 	}
 
 	isVisible(){
@@ -351,6 +367,18 @@ class Artemis {
 		}
 	}
 
+	replaceWith(data){
+		var div = document.createElement('div');
+		div.innerHTML = data;
+		this.collection[0].parentElement.replaceChild(div, this.collection[0]);
+	}
+
+	reset(){
+		if(this.length > 0){
+			this.collection[0].reset();
+		}
+	}
+
 	property(property, value){
 		if(this.collection[0]){
 			if(typeof value !== "undefined"){
@@ -383,65 +411,69 @@ function $_ready(callback){
 
 class Request {
 
-	static get(url, data, events, responseType = ""){
-		var request = new XMLHttpRequest();
-		request.open('GET', url, true);
-		request.responseType = responseType;
+	static get(url, data, responseType = ""){
+		return new Promise(function (resolve, reject) {
+			var encodedData = [];
+			for(var value in data){
+				encodedData.push(encodeURIComponent(value) + "=" + encodeURIComponent(data[value]));
+			}
+			var request = new XMLHttpRequest();
+			if (encodedData.length > 0) {
+				url = url + "?" + encodedData.join("&");
+			}
+			request.open('GET', url, true);
+			request.responseType = responseType;
 
-		if(typeof events.onload === "function"){
 			request.onload = function(){
-				events.onload(request);
+				resolve(request.response);
 			}
-		}
 
-		if(typeof events.error === "function"){
-			request.error = function(){
-				events.error(request);
+			request.onerror = function(){
+				reject(request);
 			}
-		}
 
-		request.send(data);
+			request.send();
+		});
 	}
 
-	static post(url, data, events, responseType = "", contentType = 'application/x-www-form-urlencoded'){
-		var request = new XMLHttpRequest();
-		request.open('POST', url, true);
-		request.responseType = responseType;
-		if(typeof events.onload === "function"){
+	static post(url, data, responseType = "", contentType = 'application/x-www-form-urlencoded'){
+		return new Promise(function (resolve, reject) {
+			var encodedData = [];
+			for(var value in data){
+				encodedData.push(encodeURIComponent(value) + "=" + encodeURIComponent(data[value]));
+			}
+			var request = new XMLHttpRequest();
+			request.open('POST', url, true);
+			request.responseType = responseType;
 			request.onload = function(){
-				events.onload(request);
+				resolve(request.response);
 			}
-		}
 
-		if(typeof events.error === "function"){
-			request.error = function(){
-				events.error(request);
+			request.onerror = function(){
+				reject(request);
 			}
-		}
 
-		request.setRequestHeader('Content-Type', `${contentType}; charset=UTF-8`);
-		request.send(data);
+			request.setRequestHeader('Content-Type', `${contentType}; charset=UTF-8`);
+			request.send(encodedData.join("&"));
+		});
 	}
 
-	static json(url, events){
-		var request = new XMLHttpRequest();
+	static json(url){
+		return new Promise(function (resolve, reject) {
+			var request = new XMLHttpRequest();
 
-		request.responseType = "json";
-
-		if(typeof events.onload === "function"){
+			request.responseType = "json";
 			request.onload = function(){
-				events.onload(request);
+				resolve(request.response);
 			}
-		}
 
-		if(typeof events.error === "function"){
-			request.error = function(){
-				events.error(request);
+			request.onerror = function(){
+				reject(request);
 			}
-		}
 
-		request.open('GET', url, true);
-		request.send();
+			request.open('GET', url, true);
+			request.send();
+		});
 	}
 
 }
@@ -518,7 +550,9 @@ class Storage {
 class Text {
 
     static capitalize(text){
-        return text.charAt(0).toUpperCase() + text.slice(1);
+        return text.replace(/\w\S*/g, function(txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
     }
 
     static getSuffix(text, key){
