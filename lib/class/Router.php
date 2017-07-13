@@ -50,6 +50,7 @@
 		 */
 		public static function put($route, $action){
 			self::registerRoute('PUT', new Route($route, $action));
+			self::registerRoute('OPTIONS', new Route($route, $action));
 		}
 
 		/**
@@ -60,6 +61,7 @@
 		 */
 		public static function patch($route, $action){
 			self::registerRoute('PATCH', new Route($route, $action));
+			self::registerRoute('OPTIONS', new Route($route, $action));
 		}
 
 		/**
@@ -70,6 +72,7 @@
 		 */
 		public static function delete($route, $action){
 			self::registerRoute('DELETE', new Route($route, $action));
+			self::registerRoute('OPTIONS', new Route($route, $action));
 		}
 
 		/**

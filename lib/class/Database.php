@@ -22,6 +22,10 @@
 		    $this -> connect();
 		}
 
+		public function getName () {
+			return $this -> database;
+		}
+
 		public function getPdo(){
 		    return $this -> pdo;
 		}
@@ -72,7 +76,7 @@
 				$fields .= "`$value`,";
 			}
 			$fields = rtrim($fields, ",");
-			
+
 			if($where != null && $equals != null){
 			    array_push($array, $equals);
 			    $query = "SELECT $fields FROM `$table` WHERE `$where` = ?";
@@ -89,7 +93,7 @@
 				}
 			}
 		}
-        
+
 		public function insert($table, $values){
 			$fields = "";
 			$questionMarks = "";
