@@ -17,11 +17,11 @@
         public static function type($type, $charset = 'utf-8'){
             $contentType = "";
             switch($type){
-                
+
                 case "json":
                     header("Content-Type: application/json;charset=$charset");
                     break;
-                    
+
                 case "html":
                     header("Content-Type: text/html;charset=$charset");
                     break;
@@ -44,6 +44,7 @@
          *
          */
         public static function error($code, $number = null, $message = null, $file = null, $line = null){
+			HTTP::type("html");
             $error = new Template();
             $error -> setContent(file_get_contents(__DIR__."/../../error/error.html"));
             if(Aegis::$debugging){

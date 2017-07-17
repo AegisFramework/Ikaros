@@ -8,30 +8,33 @@
 
 	class Schema {
 
-		public $db;
+		// Schema Information
 		public $charset;
 		public $collation;
 		public $engine;
-		public $name;
-		private $properties;
 		private $constrains;
+		private $properties;
 
-		function __construct(&$db, $name, $engine, $charset, $collation) {
+		// Table Information
+		public $name;
+
+
+		function __construct ($name, $engine, $charset, $collation) {
 			$this -> properties = [];
-				$this -> constrains = [];
+			$this -> constrains = [];
 			$this -> name = $name;
-			$this -> db = $db;
 			$this -> charset = $charset;
 			$this -> collation = $collation;
 			$this -> engine = $engine;
+
 		}
 
-		public static function create (&$db, $name, $engine = "InnoDB", $charset = "utf8", $collation = "utf8_bin") {
-			return new Schema ($db, $name, $engine, $charset, $collation);
+		public static function create ($name, $engine = "InnoDB", $charset = "utf8", $collation = "utf8_bin") {
+			return new Schema ($name, $engine, $charset, $collation);
 		}
 
 		function __toString () {
-			return "CREATE TABLE `{$this -> db -> getName()}`.`{$this -> name}` ({$this -> buildProperties()} {$this -> buildConstrains()}) ENGINE={$this -> engine} CHARSET={$this -> charset} COLLATE={$this -> collation}";
+			return "CREATE TABLE IF NOT EXISTS `".DB::name()."`.`{$this -> name}` ({$this -> buildProperties()} {$this -> buildConstrains()}) ENGINE={$this -> engine} CHARSET={$this -> charset} COLLATE={$this -> collation};";
 		}
 
 		private function buildProperties () {
@@ -74,6 +77,10 @@
 				array_push ($this -> constrains, $constrain);
 			}
 			return $this;
+		}
+
+		public function fields () {
+			return array_keys($this -> properties);
 		}
 
 		public function default ($name, $value) {
@@ -125,6 +132,7 @@
 		}
 
 		public function primary ($name) {
+			$this -> id = $name;
 			return $this -> addRule ($name, "PRIMARY KEY");
 		}
 
@@ -141,15 +149,19 @@
 		}
 
 		public function foreign ($name, $table, $property, $update = "CASCADE", $delete = "RESTRICT") {
-			return $this -> addConstrain ("FOREIGN KEY (`$name`) REFERENCES `{$this -> db -> getName()}`.`$table`(`$property`) ON UPDATE $update ON DELETE $delete");
+			return $this -> addConstrain ("FOREIGN KEY (`$name`) REFERENCES `".DB::name()."`.`$table`(`$property`) ON UPDATE $update ON DELETE $delete");
 		}
 
-		public static function drop (&$db, $name) {
-			$db -> query ("DROP TABLE IF EXISTS `$name`");
+		public static function drop ($name) {
+			DB::query ("DROP TABLE IF EXISTS `$name`");
+		}
+
+		public static function truncate ($name) {
+			DB::query("TRUNCATE TABLE `$name`");
 		}
 
 		public static function commit ($schema) {
-			$schema -> db -> query ($schema);
+			DB::query ($schema);
 		}
 	}
 

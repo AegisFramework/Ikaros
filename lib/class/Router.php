@@ -93,6 +93,7 @@
 		 */
 		public static function any($route, $action){
 			self::registerRoute('ANY', new Route($route, $action));
+			self::registerRoute('OPTIONS', new Route($route, $action));
 		}
 
 		/**

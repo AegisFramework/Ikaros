@@ -20,7 +20,7 @@
 		 * @return string or null | String of the path to the file or null
 		 * if it's not found.
 		 */
-		public static function findFile($directory, $file){
+		public static function findFile ($directory, $file){
 			$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory), RecursiveIteratorIterator::SELF_FIRST);
 			foreach($objects as $name => $object){
 				if($object -> getFileName() == $file){

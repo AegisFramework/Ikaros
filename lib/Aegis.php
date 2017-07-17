@@ -1,6 +1,5 @@
 <?php
 
-
 	/**
 	 * Aegis class with framework settings and information
 	 */
@@ -12,7 +11,7 @@
 		public static $flavor = "Ikaros";
 
 		// Flavor Version
-		public static $version = "0.1.0";
+		public static $version = "0.1.2";
 	}
 
 	/**
@@ -21,11 +20,13 @@
 	 * Instead of doing it explicitly, Aegis will autoload the classes you use
 	 * from the classes directory and the templates directory.
 	 */
-	function __autoload($className) {
-		if(file_exists(__DIR__."/class/$className.php")){
-			require_once("class/$className.php");
-		}else if(file_exists(__DIR__."/templates/$className.php")){
-			require_once("templates/$className.php");
+	function __autoload ($className) {
+		if (file_exists (__DIR__."/class/$className.php")) {
+			require_once ("class/$className.php");
+		} else if (file_exists (__DIR__."/templates/$className.php")) {
+			require_once ("templates/$className.php");
+		} else if (file_exists (__DIR__."/schemas/$className.php")) {
+			require_once ("schemas/$className.php");
 		}
 	}
 
@@ -35,18 +36,18 @@
 	 * It will send a 500 error code and page with debugging information
 	 * in case it is enabled.
 	 */
-    function exceptionHandler($exception){
-        HTTP::error(500, $exception -> getCode(), $exception -> getMessage(), $exception -> getFile(), $exception -> getLine());
+    function exceptionHandler ($exception) {
+        HTTP::error (500, $exception -> getCode(), $exception -> getMessage(), $exception -> getFile(), $exception -> getLine());
 		return true;
     }
-    
+
 	/**
 	 * Custom error handler for errors.
 	 *
 	 * It will send a 500 error code and page with debugging information
 	 * in case it is enabled.
 	 */
-	function errorHandler($errorNumber, $errorString, $errorFile, $errorLine){
+	function errorHandler ($errorNumber, $errorString, $errorFile, $errorLine){
 		if (!(error_reporting() && $errorNumber)) {
 	        return false;
 	    }
@@ -70,7 +71,7 @@
 
     // Set custom exception handler function
     set_exception_handler("exceptionHandler");
-    
+
 	// Set custom error handler function
 	set_error_handler("errorHandler");
 
