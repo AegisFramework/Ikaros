@@ -13,7 +13,7 @@
 		<meta name="description" content="{{_description}}"><!--Page description. No longer than 155 characters.-->
 		<meta name="keywords" content="{{_keywords}}">
 		<meta name="author" content="{{_author}}"><!--Name of the author.-->
-		<meta name="theme-color" content=""><!--Theme color for browsers in hexadecimal format.-->
+		<meta name="theme-color" content="{{_color}}"><!--Theme color for browsers in hexadecimal format.-->
 		<base href="{{_domain}}">
 
 		<!--Facebook Meta Tags-->
@@ -45,7 +45,7 @@
 			<link rel="icon" sizes="128x128" href="img/icons/icon_128x128.png"> <!--128 x 128 Icon-->
 
 			<!--Apple Meta Tags-->
-			<meta name="apple-mobile-web-app-title" content="{{title}}"> <!--App Title or Name-->
+			<meta name="apple-mobile-web-app-title" content="{{_title}}"> <!--App Title or Name-->
 			<meta name="apple-mobile-web-app-capable" content="yes">
 			<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"> <!--Styling for the iOS Status Bar-->
 			<link rel="apple-touch-icon" href="img/icons/icon_60x60.png"> <!--60 x 60 Icon-->
@@ -56,7 +56,7 @@
 			<link rel="apple-touch-icon" sizes="152x152" href="img/icons/icon_180x180.png"> <!--180 x 180 Icon-->
 
 			<!--Microsoft Tags-->
-			<meta name="msapplication-TileColor" content=""><!--Color of the tile on Windows. In hexadecimal format-->
+			<meta name="msapplication-TileColor" content="{{_color}}"><!--Color of the tile on Windows. In hexadecimal format-->
 			<meta name="application-name" content="{{_title}}"/> <!-- App Title -->
 			<meta name="msapplication-tooltip" content="{{_title}}"/> <!--Small text on hover-->
 			<meta name="msapplication-starturl" content="http://"/> <!-- URL to start in -->
