@@ -40,4 +40,3 @@ Just as with the router, change it to your path.
 RewriteBase /YourDirectory
 ```
 ## 3. Start Coding!
-

@@ -1,4 +1,5 @@
 *.zip
+*.rar
 .DS_Store
 .Thumbs
 .thumbs
@@ -8,3 +9,6 @@
 node_modules
 build
 .conf
+.ftpconfig
+.sftpconfig
+package-lock.json
