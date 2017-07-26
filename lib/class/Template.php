@@ -14,6 +14,7 @@
 		protected $_title;
 		protected $_keywords;
 		protected $_description;
+		protected $_color;
 		protected $_twitter;
 		protected $_google;
 		protected $_shareimage;
