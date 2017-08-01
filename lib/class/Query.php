@@ -122,7 +122,7 @@
 		}
 
 		public function and ($data) {
-			return $this -> append ("AND", $data);
+			return $this -> append ("AND", $data, false);
 		}
 
 		public function or ($data) {

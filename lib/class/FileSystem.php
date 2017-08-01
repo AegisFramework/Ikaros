@@ -41,6 +41,18 @@
 			return file_get_contents($file);
 		}
 
+		public static function isWritable ($path) {
+			if (self::isReadable ($path)) {
+				return is_writable ($path);
+			} else {
+				throw new Exception ("Specified File or Directory is not readable. <p><b>File</b>: $path</p>", 1);
+			}
+		}
+
+		public static function isReadable ($path) {
+			return is_readable ($path);
+		}
+
 		/**
 		 * Check if a file exists
 		 *
@@ -48,8 +60,8 @@
 		 *
 		 * @return boolean
 		 */
-		public static function fileExists($file){
-			return file_exists($file);
+		public static function exists ($file){
+			return file_exists ($file);
 		}
 
 		/**
@@ -59,7 +71,7 @@
 		 * @param string $content | Content To Write
 		 */
 		public static function write($file, $content){
-			if(self::fileExists($file)){
+			if(self::exists($file)){
 				$file = fopen($file, "a");
 				fwrite($file, $content);
 				fclose($file);

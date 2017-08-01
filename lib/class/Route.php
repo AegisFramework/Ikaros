@@ -38,7 +38,7 @@
 		 */
 		public function match($route){
 			$route_pattern = explode("/", $route);
-
+			
 			if(count($route_pattern) != count(explode("/", $this -> route))){
 			    return false;
 			}

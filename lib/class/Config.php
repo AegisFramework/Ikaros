@@ -21,7 +21,7 @@
 		 * @return string or null | Property Value Or Null If Non Existent
 		 */
 		public static function get($property){
-			if(FileSystem::fileExists(__DIR__."/../../.conf")){
+			if(FileSystem::exists(__DIR__."/../../.conf")){
 				$content = FileSystem::read(__DIR__."/../../.conf");
 				preg_match('/'.$property.'\s=\s.*/', $content, $matches);
 				if(count($matches) > 0){

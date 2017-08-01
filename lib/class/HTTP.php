@@ -61,14 +61,30 @@
             }
             switch($code){
                 case 400:
-					header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request", true, 404);
+					header($_SERVER["SERVER_PROTOCOL"]." 400 Bad Request", true, 400);
 					$error -> data["title"] = "Bad Request";
 					$error -> data["message"] = "The request is invalid.";
+					break;
+				case 401:
+					header($_SERVER["SERVER_PROTOCOL"]." 401 Unauthorized", true, 401);
+					$error -> data["title"] = "Unauthorized Access";
+					$error -> data["message"] = "Autentication is Required.";
+					break;
+				case 403:
+					header($_SERVER["SERVER_PROTOCOL"]." 403 Forbidden", true, 403);
+					$error -> data["title"] = "Forbidden";
+					$error -> data["message"] = "Forbidden access, clearance neeeded.";
 					break;
 				case 404:
 					header($_SERVER["SERVER_PROTOCOL"]." 404 Not Found", true, 404);
 					$error -> data["title"] = "Page Not Found";
 					$error -> data["message"] = "Sorry, the page you are trying to access does not exist.";
+					break;
+
+                case 409:
+					header($_SERVER["SERVER_PROTOCOL"]." 409 Conflict", true, 409);
+					$error -> data["title"] = "Conflict";
+					$error -> data["message"] = "A request or file conflict ocurred, please try again.";
 					break;
 
 				case 500:

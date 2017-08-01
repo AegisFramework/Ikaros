@@ -119,6 +119,10 @@
 			return $this -> addRule ($name, "DATETIME");
 		}
 
+		public function time ($name) {
+			return $this -> addRule ($name, "TIME");
+		}
+
 		public function boolean ($name) {
 			return $this -> addRule ($name, "BOOLEAN");
 		}

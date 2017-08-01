@@ -8,6 +8,32 @@
 
 	class Request {
 
+		public static function ip () {
+			if (!empty ($_SERVER["HTTP_CLIENT_IP"])) {
+				//check for ip from share internet
+				$ip = $_SERVER["HTTP_CLIENT_IP"];
+
+			} else if (!empty ($_SERVER["HTTP_X_FORWARDED_FOR"])) {
+		        $ip = $_SERVER["HTTP_X_FORWARDED_FOR"];
+			} else {
+		        $ip = $_SERVER["REMOTE_ADDR"];
+			}
+
+			if (filter_var ($ip, FILTER_VALIDATE_IP)) {
+				return $ip;
+			} else {
+				return null;
+			}
+		}
+
+		public static function agent () {
+			if (empty ($_SERVER['HTTP_USER_AGENT'])) {
+				return null;
+			} else {
+				return $_SERVER['HTTP_USER_AGENT'];
+			}
+		}
+
         /**
          * Get data received from a GET request
          *
@@ -17,7 +43,7 @@
          *
          * @return mixed or null | Associative array with received data
          */
-		public static function get($keys = null, $allowHTML = false, $allowEmpty = false){
+		public static function get($keys = null, $allowEmpty = false, $allowHTML = false){
 		    if($keys != null){
 		        $array = array();
     			foreach($keys as $value){
@@ -37,7 +63,7 @@
     					return null;
     				}
     			}
-    			return $array;
+    			return new Collection ($array);
 		    }else{
 		        return $_GET;
 		    }
@@ -52,7 +78,7 @@
          *
          * @return mixed or null | Associative array with received data
          */
-		public static function post($keys = null, $allowHTML = false, $allowEmpty = false){
+		public static function post($keys = null, $allowEmpty = false, $allowHTML = false){
 		    if($keys != null){
 		        $array = array();
     			foreach($keys as $value){
@@ -68,7 +94,21 @@
                             $array[$value] = $_POST[$value];
                         }
 
-    				}elseif(isset($_FILES[$value])){
+    				}else{
+    					return null;
+    				}
+    			}
+    			return new Collection ($array);
+		    }else{
+		        return $_POST;
+		    }
+		}
+
+		public static function file ($keys = null, $allowEmpty = false) {
+			if($keys != null){
+		        $array = array();
+    			foreach($keys as $value){
+    				if(isset($_FILES[$value])){
 
     					if(!$allowEmpty && empty($_FILES[$value])){
     						return null;
@@ -80,9 +120,9 @@
     					return null;
     				}
     			}
-    			return $array;
+    			return new Collection ($array);
 		    }else{
-		        return $_POST;
+		        return $_FILES;
 		    }
 		}
 
@@ -95,7 +135,7 @@
          *
          * @return mixed or null | Associative array with received data
          */
-		public static function options($keys = null, $allowHTML = false, $allowEmpty = false){
+		public static function options($keys = null, $allowEmpty = false, $allowHTML = false){
 
 		    if($_SERVER['REQUEST_METHOD'] != "OPTIONS"){
 		        return null;
@@ -122,7 +162,7 @@
     					return null;
     				}
     			}
-    			return $array;
+    			return new Collection ($array);
 		    }else{
 		        return $_OPTIONS;
 		    }
@@ -138,7 +178,7 @@
          *
          * @return mixed or null | Associative array with received data
          */
-		public static function put($keys = null, $allowHTML = false, $allowEmpty = false){
+		public static function put($keys = null, $allowEmpty = false, $allowHTML = false){
 
 		    if($_SERVER['REQUEST_METHOD'] != "PUT"){
 		        return null;
@@ -165,7 +205,7 @@
     					return null;
     				}
     			}
-    			return $array;
+    			return new Collection ($array);
 		    }else{
 		        return $_PUT;
 		    }
@@ -181,7 +221,7 @@
          *
          * @return mixed or null | Associative array with received data
          */
-		public static function patch($keys = null, $allowHTML = false, $allowEmpty = false){
+		public static function patch($keys = null, $allowEmpty = false, $allowHTML = false){
 
 		    if($_SERVER['REQUEST_METHOD'] != "PATCH"){
 		        return null;
@@ -208,7 +248,7 @@
     					return null;
     				}
     			}
-    			return $array;
+    			return new Collection ($array);
 		    }else{
 		        return $_PATCH;
 		    }
@@ -224,7 +264,7 @@
          *
          * @return mixed or null | Associative array with received data
          */
-		public static function delete($keys = null, $allowHTML = false, $allowEmpty = false){
+		public static function delete($keys = null, $allowEmpty = false, $allowHTML = false){
 
 		    if($_SERVER['REQUEST_METHOD'] != "DELETE"){
 		        return null;
@@ -251,7 +291,7 @@
     					return null;
     				}
     			}
-    			return $array;
+    			return new Collection ($array);
 		    }else{
 		        return $_DELETE;
 		    }

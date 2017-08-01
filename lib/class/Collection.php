@@ -19,7 +19,7 @@
 				} else if (is_string ($array)) {
 					$this -> array = json_decode($array, true);
 				} else {
-					throw Exception ("Collection expected an array variable or a JSON object for it's construction, received variable of type: ". gettype ($array));
+					throw new Exception ("Collection expected an array variable or a JSON object for it's construction, received variable of type: ". gettype ($array), 1);
 				}
 			}
 		}

@@ -1,5 +1,9 @@
 <?php
 
+	require_once ("class/HTTP.php");
+	require_once ("class/Template.php");
+	require_once ("class/FileSystem.php");
+
 	/**
 	 * Aegis class with framework settings and information
 	 */
@@ -20,15 +24,14 @@
 	 * Instead of doing it explicitly, Aegis will autoload the classes you use
 	 * from the classes directory and the templates directory.
 	 */
-	function __autoload ($className) {
-		if (file_exists (__DIR__."/class/$className.php")) {
-			require_once ("class/$className.php");
-		} else if (file_exists (__DIR__."/templates/$className.php")) {
-			require_once ("templates/$className.php");
-		} else if (file_exists (__DIR__."/schemas/$className.php")) {
-			require_once ("schemas/$className.php");
-		}
-	}
+	 function __autoload ($className) {
+ 		$file = FileSystem::findFile (__DIR__, "$className.php");
+ 		if ($file !== null) {
+ 			require_once ($file);
+ 		} else {
+ 			throw new Exception ("Class file could not be found<p><b>Class:</b> $className</p>", 1);
+ 		}
+ 	}
 
     /**
 	 * Custom handler for exceptions.
