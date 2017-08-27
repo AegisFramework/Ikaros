@@ -101,6 +101,16 @@
 			return $this -> append ("DELETE");
 		}
 
+		public function not () {
+			return $this -> append ("NOT");
+		}
+
+		public function between ($firstData, $secondData) {
+			$this -> append ("BETWEEN", $firstData);
+			$this -> and ();
+			return $this -> append ("", $secondData, true, false);
+		}
+
 		public function show () {
 			return $this -> query;
 		}
@@ -121,8 +131,16 @@
 			return $this -> append ("WHERE", $data, false);
 		}
 
-		public function and ($data) {
-			return $this -> append ("AND", $data, false);
+		public function bind ($data) {
+			$this -> append ("", $data);
+		}
+
+		public function and ($data = null) {
+			if ($data !== null) {
+				return $this -> append ("AND", $data, false);
+			} else {
+				return $this -> append ("AND");
+			}
 		}
 
 		public function or ($data) {
@@ -137,6 +155,10 @@
 			return $this -> append ("=", $data);
 		}
 
+		public function notEquals ($data) {
+			return $this -> append ("<>", $data);
+		}
+
 		public function lessThan ($data) {
 			return $this -> append ("<", $data);
 		}
@@ -145,16 +167,33 @@
 			return $this -> append (">", $data);
 		}
 
-		public function lessOrEqualThan ($data) {
-			return $this -> append ("<=", $data);
+		public function lessOrEqualThan ($data = null) {
+			if ($data !== null) {
+				return $this -> append ("<=", $data);
+			} else {
+				return $this -> append ("<=");
+			}
 		}
 
-		public function moreorEqualThan ($data) {
-			return $this -> append (">=", $data);
+		public function moreOrEqualThan ($data = null) {
+			if ($data !== null) {
+				return $this -> append (">=", $data);
+			} else {
+				return $this -> append (">=");
+			}
 		}
 
 		public function limit ($data) {
-			return $this -> append ("LIMIT", $data, false, false);
+			return $this -> append ("LIMIT", $data);
+		}
+
+		public function date ($data) {
+			$this -> append ("DATE(", $data, false);
+			return $this -> append (")");
+		}
+
+		public function now () {
+			return $this -> append ("NOW()");
 		}
 
 		public function commit () {

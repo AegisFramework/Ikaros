@@ -7,7 +7,7 @@
 	 */
 
 	use Defuse\Crypto\Key;
-		use Defuse\Crypto\Crypto;
+	use Defuse\Crypto\Crypto;
 	use Defuse\Crypto\Encoding;
 
 	class Crypt {
@@ -31,7 +31,6 @@
 			try {
 				return Key::createNewRandomKey ();
 			} catch (Exception $e) {
-
 				echo $e;
 			}
 		}

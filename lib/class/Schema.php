@@ -18,7 +18,6 @@
 		// Table Information
 		public $name;
 
-
 		function __construct ($name, $engine, $charset, $collation) {
 			$this -> properties = [];
 			$this -> constrains = [];
@@ -26,7 +25,10 @@
 			$this -> charset = $charset;
 			$this -> collation = $collation;
 			$this -> engine = $engine;
+		}
 
+		public function properties () {
+			return new Collection ($this -> properties);
 		}
 
 		public static function create ($name, $engine = "InnoDB", $charset = "utf8", $collation = "utf8_bin") {
@@ -35,6 +37,14 @@
 
 		function __toString () {
 			return "CREATE TABLE IF NOT EXISTS `".DB::name()."`.`{$this -> name}` ({$this -> buildProperties()} {$this -> buildConstrains()}) ENGINE={$this -> engine} CHARSET={$this -> charset} COLLATE={$this -> collation};";
+		}
+
+		public function fields () {
+			return array_keys ($this -> properties);
+		}
+
+		public function hasField ($field) {
+			return in_array ($field, array_keys ($this -> properties));
 		}
 
 		private function buildProperties () {
@@ -77,10 +87,6 @@
 				array_push ($this -> constrains, $constrain);
 			}
 			return $this;
-		}
-
-		public function fields () {
-			return array_keys($this -> properties);
 		}
 
 		public function default ($name, $value) {
