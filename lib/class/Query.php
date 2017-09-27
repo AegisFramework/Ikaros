@@ -196,6 +196,28 @@
 			return $this -> append ("NOW()");
 		}
 
+		public function orderBy ($data) {
+			$first = true;
+			foreach ($data as $value) {
+				if (is_array ($value)) {
+					if ($value[1] === "DESC" || $value[1] === "ASC") {
+						if ($first === true) {
+							$this -> append ("ORDER BY", $value[0], false);
+							$first = false;
+						} else {
+							$this -> append (",", $value[0], false);
+						}
+						$this -> append ("{$value[1]}");
+					} else {
+						continue;
+					}
+				} else {
+					continue;
+				}
+			}
+			return $this;
+		}
+
 		public function commit () {
 			$sth = DB::query ($this -> query, $this -> bindings);
 			$this -> object = $sth;

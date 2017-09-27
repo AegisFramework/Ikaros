@@ -16,9 +16,11 @@
 		protected static $ignore = [];
 		protected static $invisible = [];
 		protected static $logical;
+		protected static $order = [];
 		protected static $secure = [];
 		protected static $defaults = [];
 		protected static $hash = [];
+		protected static $duplicateCheck = [];
 
 		public static function schema () {
 			return static::$schema;
@@ -32,11 +34,30 @@
 			return in_array ($id, static::$block);
 		}
 
+		public static function checkDuplicates ($object) {
+			if (is_array (static::$duplicateCheck)) {
+				$check = [];
+				foreach (static::$duplicateCheck as $attribute) {
+					if (array_key_exists ($attribute, $object)) {
+						$check[$attribute] = $object[$attribute];
+					}
+				}
+				if (count ($check) > 0) {
+					return !static::exists ($check);
+				} else {
+					return true;
+				}
+			}
+			return true;
+		}
+
 		public static function defaults ($object) {
 			foreach (static::$defaults as $key => $value) {
 				if (!in_array ($key, $object)) {
 					$object[$key] = $value;
 				} else if (empty ($object[$key])) {
+					$object[$key] = $value;
+				} else if (!is_numeric($object[$key]) && is_numeric ($value)) {
 					$object[$key] = $value;
 				}
 			}
@@ -144,13 +165,60 @@
 				}
 			}
 
+			if (is_array (static::$order)) {
+				if (count (static::$order) > 0) {
+					$query -> orderBy (static::$order);
+				}
+			}
+
 			$query -> commit ();
 
 			$results = $query -> results ();
 			foreach ($results as $result) {
 				array_push ($searchResults, static::get($result[static::$id], $fields));
 			}
-			return $searchResults;
+			return static::sort($searchResults);
+		}
+
+		public static function sort ($items, $sortKey = null, $order = null) {
+			if ($sortKey !== null && $order !== null) {
+				$new_array = array();
+				$sortable_array = array();
+
+				$sorted_array = array ();
+
+				if (count ($items) > 0) {
+					foreach ($items as $index => $item) {
+						foreach ($item as $key => $value) {
+							if ($key == $sortKey) {
+								$sortable_array[$index] = $value;
+							}
+						}
+					}
+
+					switch ($order) {
+						case SORT_ASC:
+							asort($sortable_array);
+							break;
+
+						case SORT_DESC:
+							arsort($sortable_array);
+							break;
+					}
+					foreach ($sortable_array as $key => $value) {
+						$key = intval ($key);
+						$new_array[$key] = $items[$key];
+					}
+
+					unset ($items);
+
+					return array_values($new_array);
+				} else {
+					return $items;
+				}
+			} else {
+				return $items;
+			}
 		}
 
 		public static function get ($id, $fields = null, $callback = null, $arguments = []) {
@@ -178,7 +246,7 @@
 					$result = $record[$fields];
 				} else if (is_array ($fields)) {
 					foreach ($fields as $field) {
-						if (in_array ($field, static::$hash)) {
+						if (in_array ($field, static::$hash) || in_array ($field, static::$invisible)) {
 							unset ($record[$field]);
 						}
 					}
@@ -195,17 +263,22 @@
 			if (!empty ($object)) {
 				$keys = array_keys ($object);
 				if (static::hasFields ($keys)) {
-					$object = static::defaults ($object);
-					$object = static::encrypt ($object);
-					$query = new Query ();
-					$query 	-> insert ()
-							-> into (static::$name)
-							-> values ($object)
-							-> commit ();
+					if (static::checkDuplicates ($object)) {
+						$object = static::defaults ($object);
+						$object = static::encrypt ($object);
+						$query = new Query ();
+						$query 	-> insert ()
+								-> into (static::$name)
+								-> values ($object)
+								-> commit ();
 
-					if (is_callable ($callback)) {
-						return call_user_func_array($callback, array_merge([static::$id => DB::last (), "object" => $object], ["arguments" => $arguments]));
+						if (is_callable ($callback)) {
+							return call_user_func_array($callback, array_merge([static::$id => DB::last (), "object" => $object], ["arguments" => $arguments]));
+						}
+					} else {
+						throw new Exception ("Tried to insert duplicate record in ". static::$name, 1);
 					}
+
 				} else {
 					throw new Exception ("Tried to create an object in ". static::$name. " with at least one non-existing field.<p><b>Existing Fields:</b> ". print_r (static::fields (), true) ."</p>". "<p><b>Received Fields:</b> ". print_r ($keys, true) ."</p>", 1);
 				}

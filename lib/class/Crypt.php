@@ -31,16 +31,16 @@
 			try {
 				return Key::createNewRandomKey ();
 			} catch (Exception $e) {
-				echo $e;
+				throw new Exception ($e, 1);
 			}
 		}
 
 		public static function encrypt ($plainText) {
-			return Crypto::encrypt($plainText, self::$key);
+			return Crypto::encrypt ($plainText, self::$key);
 		}
 
 		public static function decrypt ($cipherText) {
-			return Crypto::decrypt($cipherText, self::$key);
+			return Crypto::decrypt ($cipherText, self::$key);
 		}
 	}
 ?>
