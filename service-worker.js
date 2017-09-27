@@ -8,6 +8,39 @@ var version = "";
 
 var files = [
 
+	// Style Sheets
+	"style/font-awesome.min.css",
+	"style/animate.min.css",
+	"style/kayros.css",
+	"style/main.css",
+
+	// Scripts
+	"js/artemis.js",
+	"js/main.js",
+
+	// Fonts
+	"fonts/fontawesome-webfont.eot",
+	"fonts/fontawesome-webfont.svg",
+	"fonts/fontawesome-webfont.ttf",
+	"fonts/fontawesome-webfont.woff",
+	"fonts/fontawesome-webfont.woff2",
+	"fonts/FontAwesome.otf",
+
+	// Images
+	"img/favicon.ico",
+	"img/icons/icon_48x48.png",
+	"img/icons/icon_60x60.png",
+	"img/icons/icon_70x70.png",
+	"img/icons/icon_76x76.png",
+	"img/icons/icon_96x96.png",
+	"img/icons/icon_128x128.png",
+	"img/icons/icon_150x150.png",
+	"img/icons/icon_152x152.png",
+	"img/icons/icon_167x167.png",
+	"img/icons/icon_180x180.png",
+	"img/icons/icon_192x192.png",
+	"img/icons/icon_310x310.png",
+	"img/icons/icon_512x512.png"
 ];
 
 self.addEventListener("install", function (event) {
